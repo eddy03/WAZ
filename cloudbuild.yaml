@@ -1,0 +1,37 @@
+steps:
+  - name: 'docker'
+    id: build
+    args:
+      - build
+      - '-t'
+      - 'asia.gcr.io/${PROJECT_ID}/${_PROJECT_APP_NAME}/${_BUILD_ENV}/app:${SHORT_SHA}'
+      - '.'
+
+  - name: 'gcr.io/cloud-builders/docker'
+    id: push
+    args:
+      - push
+      - 'asia.gcr.io/${PROJECT_ID}/${_PROJECT_APP_NAME}/${_BUILD_ENV}/app:${SHORT_SHA}'
+
+  - name: 'gcr.io/cloud-builders/gcloud'
+    id: deploy
+    waitFor:
+      - build
+      - push
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - '$_CLOUD_RUN_APP_NAME'
+      - '--image'
+      - 'asia.gcr.io/${PROJECT_ID}/${_PROJECT_APP_NAME}/${_BUILD_ENV}/app:${SHORT_SHA}'
+      - '--region'
+      - '${_REGION}'
+      - '--ingress'
+      - 'internal-and-cloud-load-balancing'
+      - '--min-instances'
+      - '${_MIN_INSTANCES}'
+      - '--port'
+      - '${_CONTAINERPORTUSED}'
+      - '--allow-unauthenticated'
+timeout: "3600s"
