@@ -31,6 +31,7 @@ export default function Callback(props) {
 				.then(() => Cookie.set(cookieName, query.token))
 				.then(() => router.push('/'))
 				.catch(err => {
+					// @todo handle error
 					console.error(err.toString())
 				})
 		} else {

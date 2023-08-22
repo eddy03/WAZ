@@ -47,6 +47,7 @@ export default function Home() {
     })
       .then(response => setResults(response.data))
       .catch(err => {
+        // @todo handle error
         console.error(err.toString())
       })
       .finally(() => setIsLoading(false))

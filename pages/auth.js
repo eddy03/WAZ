@@ -34,6 +34,7 @@ export default function Auth(props) {
         .then(response => dispatch(setProfile(response.data)))
         .then(() => router.push(!_.isEmpty(query.bck) ? query.bck : '/'))
         .catch(err => {
+          // @todo handle error
           initilizeGoogleBtn()
         })
     } else {
