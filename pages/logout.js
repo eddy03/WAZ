@@ -6,11 +6,11 @@ import {useDispatch} from 'react-redux'
 import Head from 'next/head'
 import { useRouter } from 'next/navigation'
 
-import cookieName from '@/src/lib/cookie-key'
-import Container from '@mui/material/Container'
 import Typography from '@mui/material/Typography'
 
+import cookieName from '@/src/lib/cookie-key'
 import { clearProfile } from '@store/reducers/profile'
+import Wrapper from "@comp/wrapper";
 
 export default function Callback(props) {
 
@@ -31,13 +31,11 @@ export default function Callback(props) {
 				<title>Logging out | My Assignment</title>
 				<meta name="description" content="Logging out | My Assignment"/>
 			</Head>
-			<div>
-				<Container>
-					<Typography variant={'h5'} sx={{mt: 2, mb: 2}} align={'center'}>
-						Logging you out. Please wait
-					</Typography>
-				</Container>
-			</div>
+			<Wrapper withNavbar={false} withFooter={false}>
+				<Typography variant={'h5'} sx={{mt: 2, mb: 2}} align={'center'}>
+					Logging you out. Please wait
+				</Typography>
+			</Wrapper>
 		</>
 	)
 }

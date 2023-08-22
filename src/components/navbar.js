@@ -1,6 +1,6 @@
 import {useState} from 'react'
-
 import _ from 'lodash'
+import {useSelector} from "react-redux";
 
 import Link from 'next/link'
 
@@ -14,6 +14,7 @@ import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Avatar from '@mui/material/Avatar'
 import Container from '@mui/material/Container'
+
 
 const StyledAppbar = styled(AppBar)`
   background-color: #FFF;
@@ -34,7 +35,7 @@ const StyledMenu = styled(Menu)`
 
 export default function Navbar (props) {
 
-	const {me} = props
+	const {me} = useSelector(state => state.profile)
 
 	const [anchorEl, setAnchorEl] = useState(null)
 

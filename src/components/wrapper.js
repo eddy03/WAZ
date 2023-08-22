@@ -1,5 +1,4 @@
 import React from 'react'
-import {useSelector} from 'react-redux'
 
 import {styled} from '@mui/material/styles'
 import Box from '@mui/material/Box'
@@ -16,15 +15,19 @@ const StyledDiv = styled(Box)`
 
 export default function Wrapper(props) {
 
-	const {me} = useSelector(state => state.profile)
+	const {withNavbar = true, withFooter = true} = props
 
 	return (
 		<StyledDiv>
-			<Navbar me={me} />
+			{
+				withNavbar && <Navbar />
+			}
 			<Content>
 				{props.children}
 			</Content>
-			<Footer />
+			{
+				withFooter && <Footer />
+			}
 		</StyledDiv>
 	)
 }

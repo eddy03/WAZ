@@ -11,14 +11,15 @@ import cookieName from '@/src/lib/cookie-key'
 
 import { setProfile } from '@store/reducers/profile'
 import Typography from '@mui/material/Typography'
-import Container from '@mui/material/Container'
+
+import Wrapper from "@comp/wrapper";
 
 export default function Callback(props) {
 
 	const {query} = props
 
-const router = useRouter()
-const dispatch = useDispatch()
+	const router = useRouter()
+	const dispatch = useDispatch()
 
 	useEffect(() => {
 
@@ -32,6 +33,8 @@ const dispatch = useDispatch()
 				.catch(err => {
 					console.error(err.toString())
 				})
+		} else {
+			router.push(`/auth?msg=${encodeURIComponent('There is an error')}&type=error`)
 		}
 
 	}, [query])
@@ -42,13 +45,11 @@ const dispatch = useDispatch()
 				<title>Verify Auth | My Assignment</title>
 				<meta name="description" content="Verify Auth | My Assignment"/>
 			</Head>
-			<div>
-				<Container>
-					<Typography variant={'h5'} sx={{mt: 2, mb: 2}} align={'center'}>
-						Validating your login. Please wait
-					</Typography>
-				</Container>
-			</div>
+			<Wrapper withNavbar={false} withFooter={false}>
+				<Typography variant={'h5'} sx={{mt: 2, mb: 2}} align={'center'}>
+					Validating your login. Please wait
+				</Typography>
+			</Wrapper>
 		</>
 	)
 }

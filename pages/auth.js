@@ -10,11 +10,11 @@ import Script from 'next/script'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Unstable_Grid2'
 import Alert from '@mui/material/Alert'
-import Container from '@mui/material/Container'
 import Typography from '@mui/material/Typography'
 
 import cookieName from '@/src/lib/cookie-key'
 import request from '@lib/request'
+import Wrapper from "@comp/wrapper"
 import {setProfile} from '@store/reducers/profile'
 
 export default function Auth(props) {
@@ -79,30 +79,26 @@ export default function Auth(props) {
         <title>Auth | My Assignment</title>
         <meta name="description" content="Auth  | My Assignment" />
       </Head>
-      <Box sx={{mt: 4}}>
+      {
+        !_.isEmpty(query.msg) && (
+          <Alert severity={query.type || 'error'} onClose={() => router.replace('/auth')}>{query.msg}</Alert>
+        )
+      }
+      <Wrapper withNavbar={false} withFooter={false}>
+        <Typography variant={'h5'} sx={{mt: 2, mb: 2}} align={'center'}>
+          Please sign in using your google account to continue using the service.
+        </Typography>
 
-        <Container>
-          {
-            !_.isEmpty(query.msg) && (
-              <Alert severity={query.type || 'error'}>{query.msg}</Alert>
-            )
-          }
-
-          <Typography variant={'h5'} sx={{mt: 2, mb: 2}} align={'center'}>
-            Please sign in using your google account to continue using the service.
-          </Typography>
-
-          <Grid container>
-            <Grid smOffset={5}>
-              <Box sx={{mt: 2}}>
-                <div id={'google_btn'}></div>
-              </Box>
-            </Grid>
+        <Grid container>
+          <Grid smOffset={5}>
+            <Box sx={{mt: 2}}>
+              <div id={'google_btn'}></div>
+            </Box>
           </Grid>
-        </Container>
+        </Grid>
+      </Wrapper>
 
-        <Script src="https://accounts.google.com/gsi/client" async />
-      </Box>
+      <Script src="https://accounts.google.com/gsi/client" async />
     </>
   )
 }
