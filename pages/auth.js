@@ -90,13 +90,9 @@ export default function Auth(props) {
 					Please sign in using your google account to continue using the service.
 				</Typography>
 
-				<Grid container>
-					<Grid smOffset={5}>
-						<Box sx={{mt: 2}}>
-							<div id={'google_btn'}></div>
-						</Box>
-					</Grid>
-				</Grid>
+				<Box sx={{mt: 2, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+					<div id={'google_btn'}></div>
+				</Box>
 			</Wrapper>
 
 			<Script src="https://accounts.google.com/gsi/client" async/>
