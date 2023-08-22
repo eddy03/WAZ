@@ -1,17 +1,77 @@
+import {useEffect, useRef} from 'react'
+import _ from 'lodash'
+import Cookie from 'js-cookie'
+import {useDispatch} from 'react-redux'
+
+import {useRouter} from 'next/navigation'
 import Head from 'next/head'
 import Script from 'next/script'
 
-import {styled} from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Unstable_Grid2'
+import Alert from '@mui/material/Alert'
+import Container from '@mui/material/Container'
+import Typography from '@mui/material/Typography'
 
-const StyledDiv = styled(Box)`
-  
-`
+import cookieName from '@/src/lib/cookie-key'
+import request from '@lib/request'
+import {setProfile} from '@store/reducers/profile'
 
 export default function Auth(props) {
 
-  const {client_id: clientId, redirect_uri: redirectUri} = props
+  const {query, client_id: clientId, redirect_uri: redirectUri} = props
+
+  const intervalRef = useRef(null)
+
+  const router = useRouter()
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+
+    const token = Cookie.get(cookieName)
+    if (!_.isEmpty(_.trim(token))) {
+      request.get('profile', {headers: {Authorization: `Bearer ${token}`}})
+        .then(response => dispatch(setProfile(response.data)))
+        .then(() => router.push(!_.isEmpty(query.bck) ? query.bck : '/'))
+        .catch(err => {
+          initilizeGoogleBtn()
+        })
+    } else {
+      initilizeGoogleBtn()
+    }
+
+  }, [])
+
+  function initilizeGoogleBtn () {
+    if (window && intervalRef.current === null) {
+      intervalRef.current = true
+      intervalRef.current = setInterval(() => {
+        if (!_.isEmpty(window.google) && _.has(window.google, 'accounts')) {
+          const {google} = window
+
+          clearInterval(intervalRef.current)
+          google.accounts.id.initialize({
+            client_id: clientId,
+            login_uri: redirectUri,
+            ux_mode: 'redirect',
+            native_login_uri: null
+          })
+
+          const btn = document.getElementById('google_btn')
+          if (btn) {
+            google.accounts.id.renderButton(btn, {
+              theme: "filled_white",
+              text: 'continue_with',
+              click_listener: () => {
+                console.log('Click')
+              }
+            });
+          }
+
+        }
+      }, 300)
+    }
+  }
 
   return (
     <>
@@ -19,41 +79,40 @@ export default function Auth(props) {
         <title>Auth | My Assignment</title>
         <meta name="description" content="Auth  | My Assignment" />
       </Head>
-      <StyledDiv sx={{mt: 4}}>
+      <Box sx={{mt: 4}}>
 
-        <Grid container>
-          <Grid smOffset={5}>
-            <div>
-              <div id="g_id_onload"
-                   data-client_id={clientId}
-                   data-context="signin"
-                   data-ux_mode="redirect"
-                   data-login_uri={redirectUri}
-                   data-auto_prompt="false">
-              </div>
+        <Container>
+          {
+            !_.isEmpty(query.msg) && (
+              <Alert severity={query.type || 'error'}>{query.msg}</Alert>
+            )
+          }
 
-              <div className="g_id_signin"
-                   data-type="standard"
-                   data-shape="rectangular"
-                   data-theme="outline"
-                   data-text="signin_with"
-                   data-size="large"
-                   data-logo_alignment="left">
-              </div>
-            </div>
+          <Typography variant={'h5'} sx={{mt: 2, mb: 2}} align={'center'}>
+            Please sign in using your google account to continue using the service.
+          </Typography>
+
+          <Grid container>
+            <Grid smOffset={5}>
+              <Box sx={{mt: 2}}>
+                <div id={'google_btn'}></div>
+              </Box>
+            </Grid>
           </Grid>
-        </Grid>
+        </Container>
 
-        <Script src="https://accounts.google.com/gsi/client" />
-      </StyledDiv>
+        <Script src="https://accounts.google.com/gsi/client" async />
+      </Box>
     </>
   )
 }
 
-export const getServerSideProps = async () => {
+export const getServerSideProps = async (ctx) => {
+  const {query} = ctx
 
   return {
     props: {
+      query,
       client_id: process.env.GOOGLE_CLIENT_ID,
       redirect_uri: process.env.GOOGLE_REDIRECT_URI
     }

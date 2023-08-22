@@ -1,64 +1,73 @@
-import Head from 'next/head'
-import {useEffect, useRef} from "react";
-import Script from "next/script";
-import Link from 'next/link'
+import {useEffect} from 'react'
 import _ from 'lodash'
+import Cookie from 'js-cookie'
+import {useDispatch} from 'react-redux'
 
-import Button from '@mui/material/Button'
+import Head from 'next/head'
+import { useRouter } from 'next/navigation'
+
+import request from '@lib/request'
+import cookieName from '@/src/lib/cookie-key'
+
+import { setProfile } from '@store/reducers/profile'
+import Typography from '@mui/material/Typography'
+import Container from '@mui/material/Container'
 
 export default function Callback(props) {
 
-  const {client_id: clientId, redirect_uri: redirectUri} = props
+	const {query} = props
 
-  const intervalRef = useRef(null)
+const router = useRouter()
+const dispatch = useDispatch()
 
-  useEffect(() => {
+	useEffect(() => {
 
-    if (window && intervalRef.current === null) {
-      intervalRef.current = true
-      intervalRef.current = setInterval(() => {
-        if (!_.isEmpty(window.google) && _.has(window.google, 'accounts')) {
-          clearInterval(intervalRef.current)
-          window.google.accounts.id.initialize({
-            client_id: clientId,
-            callback: () => {
-              console.log('arguments', arguments)
-            }
-          })
+		if (!_.isEmpty(_.trim(query.msg))) {
+			router.push(`/auth?msg=${encodeURIComponent(query.msg)}&type=${encodeURIComponent(query.type)}`)
+		} else if (!_.isEmpty(_.trim(query.token))) {
+			request.get('profile', {headers: {Authorization: `Bearer ${query.token}`}})
+				.then(response => dispatch(setProfile(response.data)))
+				.then(() => Cookie.set(cookieName, query.token))
+				.then(() => router.push('/'))
+				.catch(err => {
+					console.error(err.toString())
+				})
+		}
 
+	}, [query])
 
-
-          // console.log(window.google.accounts.id.prompt())
-          // console.log(window.google.accounts.oauth2.hasGrantedAllScopes())
-        }
-      }, 300)
-    }
-
-  }, [])
-
-  return (
-    <>
-      <Head>
-        <title>Verify Auth | My Assignment</title>
-        <meta name="description" content="Verify Auth | My Assignment" />
-      </Head>
-      <div>
-
-        <Link href={'/'}>
-          <Button>Back to login</Button>
-        </Link>
-
-        <Script src="https://accounts.google.com/gsi/client" />
-      </div>
-    </>
-  )
+	return (
+		<>
+			<Head>
+				<title>Verify Auth | My Assignment</title>
+				<meta name="description" content="Verify Auth | My Assignment"/>
+			</Head>
+			<div>
+				<Container>
+					<Typography variant={'h5'} sx={{mt: 2, mb: 2}} align={'center'}>
+						Validating your login. Please wait
+					</Typography>
+				</Container>
+			</div>
+		</>
+	)
 }
 
 export const getServerSideProps = async (ctx) => {
-  return {
-    props: {
-      client_id: process.env.GOOGLE_CLIENT_ID,
-      redirect_uri: process.env.GOOGLE_REDIRECT_URI
-    }
-  }
+	const {query, req} = ctx
+
+  const destination = `/auth?msg=${encodeURIComponent('Invalid method')}&type=${encodeURIComponent('error')}`
+
+	try {
+		const {method} = req
+
+		if (method !== 'POST') {
+      return {redirect: {destination}}
+		}
+
+    return {props: {query}}
+	} catch (err) {
+    return {redirect: {destination}}
+	}
+
 }
