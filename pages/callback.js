@@ -4,15 +4,15 @@ import Cookie from 'js-cookie'
 import {useDispatch} from 'react-redux'
 
 import Head from 'next/head'
-import { useRouter } from 'next/navigation'
+import {useRouter} from 'next/navigation'
 
 import request from '@lib/request'
 import cookieName from '@/src/lib/cookie-key'
 
-import { setProfile } from '@store/reducers/profile'
+import {setProfile} from '@store/reducers/profile'
 import Typography from '@mui/material/Typography'
 
-import Wrapper from "@comp/wrapper";
+import Wrapper from '@comp/wrapper'
 
 export default function Callback(props) {
 
@@ -58,18 +58,18 @@ export default function Callback(props) {
 export const getServerSideProps = async (ctx) => {
 	const {query, req} = ctx
 
-  const destination = `/auth?msg=${encodeURIComponent('Invalid method')}&type=${encodeURIComponent('error')}`
+	const destination = `/auth?msg=${encodeURIComponent('Invalid method')}&type=${encodeURIComponent('error')}`
 
 	try {
 		const {method} = req
 
 		if (method !== 'POST') {
-      return {redirect: {destination}}
+			return {redirect: {destination}}
 		}
 
-    return {props: {query}}
+		return {props: {query}}
 	} catch (err) {
-    return {redirect: {destination}}
+		return {redirect: {destination}}
 	}
 
 }

@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import {OAuth2Client} from 'google-auth-library'
-import { nanoid } from 'nanoid'
+import {nanoid} from 'nanoid'
 
 export default async function handler(req, res) {
 	const {method, body, cookies, addToken} = req
@@ -27,7 +27,7 @@ export default async function handler(req, res) {
 		try {
 			ticket = await client.verifyIdToken({idToken: credential, audience: clientId})
 		} catch (err) {
-		  return res.redirect(`/callback?msg=${encodeURIComponent('Invalid authentication')}&type=error`)
+			return res.redirect(`/callback?msg=${encodeURIComponent('Invalid authentication')}&type=error`)
 		}
 
 		const payload = ticket.getPayload()

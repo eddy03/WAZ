@@ -26,6 +26,6 @@ export default async function handler(req, res) {
     }
 
     console.error(err.toString())
-    res.status(500).json({msg: ''})
+    res.status(500).json({msg: 'There is an error'})
   }
 }

@@ -1,6 +1,6 @@
 import {useState} from 'react'
 import _ from 'lodash'
-import {useSelector} from "react-redux";
+import {useSelector} from 'react-redux'
 
 import Link from 'next/link'
 
@@ -14,7 +14,6 @@ import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Avatar from '@mui/material/Avatar'
 import Container from '@mui/material/Container'
-
 
 const StyledAppbar = styled(AppBar)`
   background-color: #FFF;
@@ -33,17 +32,17 @@ const StyledMenu = styled(Menu)`
   }
 `
 
-export default function Navbar (props) {
+export default function Navbar(props) {
 
 	const {me} = useSelector(state => state.profile)
 
 	const [anchorEl, setAnchorEl] = useState(null)
 
-	function handleMenu (e) {
+	function handleMenu(e) {
 		setAnchorEl(e.currentTarget)
 	}
 
-	function handleClose () {
+	function handleClose() {
 		setAnchorEl(null)
 	}
 
@@ -51,7 +50,7 @@ export default function Navbar (props) {
 		<StyledAppbar position="static">
 			<Container>
 				<Toolbar disableGutters>
-					<Box sx={{ flexGrow: 1 }}>
+					<Box sx={{flexGrow: 1}}>
 						<Link href={'/'}>
 							<Typography variant="h6" component="span">
 								My assignment
@@ -68,7 +67,7 @@ export default function Navbar (props) {
 									aria-haspopup="true"
 									onClick={handleMenu}
 									color="inherit">
-									<Avatar alt="Profile" src={me.picture} />
+									<Avatar alt="Profile" src={me.picture}/>
 								</IconButton>
 								<StyledMenu
 									keepMounted

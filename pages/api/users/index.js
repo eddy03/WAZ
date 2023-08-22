@@ -21,6 +21,9 @@ export default async function handler(req, res) {
 
     const {name} = query
 
+    // We can make this URL on .env
+    // But for this case. let make it simple
+    // We also can cache this...
     const reqResponse = await axios.get('https://reqres.in/api/users', {
       params: {per_page: 50}
     })
@@ -35,12 +38,17 @@ export default async function handler(req, res) {
       })
     }
 
+    // masked the email
     results.map(d => {
       d.email = d.email.replace(/\w/g, 'x')
     })
 
     res.json(results)
   } catch (err) {
+    if (err.response) {
+      return res.status(err.response.status).json(err.response.data)
+    }
+
     console.error(err.toString())
     res.status(500).json({msg: ''})
   }

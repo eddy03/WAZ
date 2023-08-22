@@ -8,9 +8,9 @@ import Content from './content'
 import Footer from './footer'
 
 const StyledDiv = styled(Box)`
-	min-height: 100vh;
+  min-height: 100vh;
   display: flex;
-	flex-direction: column;
+  flex-direction: column;
 `
 
 export default function Wrapper(props) {
@@ -20,13 +20,13 @@ export default function Wrapper(props) {
 	return (
 		<StyledDiv>
 			{
-				withNavbar && <Navbar />
+				withNavbar && <Navbar/>
 			}
 			<Content>
 				{props.children}
 			</Content>
 			{
-				withFooter && <Footer />
+				withFooter && <Footer/>
 			}
 		</StyledDiv>
 	)

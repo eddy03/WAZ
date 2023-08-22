@@ -4,13 +4,13 @@ import _ from 'lodash'
 import {useDispatch} from 'react-redux'
 
 import Head from 'next/head'
-import { useRouter } from 'next/navigation'
+import {useRouter} from 'next/navigation'
 
 import Typography from '@mui/material/Typography'
 
 import cookieName from '@/src/lib/cookie-key'
-import { clearProfile } from '@store/reducers/profile'
-import Wrapper from "@comp/wrapper";
+import {clearProfile} from '@store/reducers/profile'
+import Wrapper from '@comp/wrapper'
 
 export default function Callback(props) {
 

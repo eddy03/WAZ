@@ -3,7 +3,7 @@ import {useSelector} from 'react-redux'
 import _ from 'lodash'
 
 import Head from 'next/head'
-import { useRouter} from 'next/navigation'
+import {useRouter} from 'next/navigation'
 
 import Typography from '@mui/material/Typography'
 
@@ -20,7 +20,7 @@ export default function Callback(props) {
 		}
 
 	}, [])
-	
+
 	return (
 		<>
 			<Head>
